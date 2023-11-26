@@ -21,7 +21,7 @@ const SongItem: React.FC<SongItemProps> = ({ data, onClick }) => {
       <div className='relative aspect-square w-full h-full rounded-md overflow-hidden'>
         <Image
           className='object-cover'
-          src={imagePath || "/public/images/liked.png"}
+          src={imagePath || "/images/liked.png"}
           fill
           alt='Image'
           sizes='30px 30px'
