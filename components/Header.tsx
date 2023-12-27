@@ -11,6 +11,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { FaUserAlt } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import usePlayer from "@/hooks/usePlayer";
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ children, className }) => {
+  const player = usePlayer();
   const authModal = useAuthModal();
   const router = useRouter();
 
@@ -26,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
 
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut();
-    //Reset any playing song in future
+    player.reset();
     router.refresh();
 
     if (error) {
@@ -63,27 +65,38 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
           </button>
         </div>
         <div className='flex md:hidden gap-x-2 items-center'>
-          <button className='rounded-full bg-white p-2 flex items-center justify-center hover:opacity-75 transition'>
+          <button
+            onClick={() => router.push("/")}
+            className='rounded-full bg-white p-2 flex items-center justify-center hover:opacity-75 transition cursor-pointer'
+          >
             <HiHome className='text-black' size={20} />
           </button>
-          <button className='rounded-full bg-white p-2 flex items-center justify-center hover:opacity-75 transition'>
+          <button
+            onClick={() => router.push("/search")}
+            className='rounded-full bg-white p-2 flex items-center justify-center hover:opacity-75 transition cursor-pointer'
+          >
             <BiSearch className='text-black' size={20} />
           </button>
         </div>
         <div className='flex justify-between items-center gap-x-4'>
           {user ? (
-            <div className='flex gap-x-4 items-center'>
-              <Button onClick={handleLogout} className='bg-white px-6 py-2'>
-                Log out
-              </Button>
-              <Button
-                onClick={() => router.push("/account")}
-                className='bg-white'
-              >
-                <FaUserAlt />
-              </Button>
-            </div>
+            <>
+              <div>
+                <Button onClick={handleLogout} className='bg-white px-6 py-2'>
+                  Log out
+                </Button>
+              </div>
+              <div>
+                <Button
+                  onClick={() => router.push("/account")}
+                  className='bg-white'
+                >
+                  <FaUserAlt />
+                </Button>
+              </div>
+            </>
           ) : (
+            // </div>
             <>
               <div>
                 <Button

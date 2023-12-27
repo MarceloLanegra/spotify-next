@@ -2,6 +2,7 @@ import { getURL } from "@/libs/helpers";
 import { stripe } from "@/libs/stripe";
 import { createOrRetrieveCustomer } from "@/libs/supabaseAdmin";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { error } from "console";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -27,15 +28,19 @@ export async function POST(request: Request) {
         {
           price: price.id,
           quantity,
-        }
+        },
       ],
-      mode: 'subscription',
+      mode: "subscription",
       allow_promotion_codes: true,
       subscription_data: {
-        metadata
+        metadata,
       },
       success_url: `${getURL()}/account`,
-      cancel_url: `${getURL()}/`,
-    })
-  } catch {}
+      cancel_url: `${getURL()}`,
+    });
+    return NextResponse.json({ sessionId: session.id });
+  } catch (error: any) {
+    console.log(error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
 }
